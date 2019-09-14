@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  restaurant: one
+  address: MyText
+  city: one
+  area: one
+
+two:
+  restaurant: two
+  address: MyText
+  city: two
+  area: two
