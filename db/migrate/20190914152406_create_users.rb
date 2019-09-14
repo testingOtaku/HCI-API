@@ -5,6 +5,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
       t.string :username, null: false
       t.string :password_digest, null: false
       t.references :role, null: false, foreign_key: true
+      t.boolean :is_enabled, null: false
 
       t.timestamps
     end

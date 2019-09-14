@@ -1,6 +1,6 @@
 class TagsController < ApplicationController
   before_action :authorize_request, except: [:index, :show]
-  before_action :set_tag, only: [:show, :update]
+  before_action :set_tag, only: :show
 
   # GET /tags
   def index
@@ -16,19 +16,14 @@ class TagsController < ApplicationController
 
   # POST /tags
   def create
+    if @current_user.role_id == 1
+      not_found
+    end
+
     @tag = Tag.new(tag_params)
 
     if @tag.save
       render json: @tag, status: :created, location: @tag
-    else
-      render json: @tag.errors, status: :unprocessable_entity
-    end
-  end
-
-  # PATCH/PUT /tags/1
-  def update
-    if @tag.update(tag_params)
-      render json: @tag
     else
       render json: @tag.errors, status: :unprocessable_entity
     end

@@ -1,10 +1,9 @@
 class UsersController < ApplicationController
-  before_action :authorize_request, only: [:create, :update]
+  before_action :authorize_request, only: :update
   before_action :set_user, only: [:show, :update]
 
   # GET /users
   def index
-    puts @current_user.name
     @users = User.where(user_params).all
 
     render json: @users, except: :password_digest, include: :role
@@ -17,7 +16,14 @@ class UsersController < ApplicationController
 
   # POST /users
   def create
-    @user = User.new(user_params)
+    @user = User.new({
+      name: user_params[:name],
+      username: user_params[:username],
+      password: user_params[:password],
+      password_confirmation: user_params[:password_confirmation] || user_params[:password],
+      is_enabled: true,
+      role_id: 1
+    })
 
     if @user.save
       render json: @user, status: :created, location: @user
@@ -28,7 +34,9 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1
   def update
-    if @user.update(user_params)
+    if @current_user.id != @user.id && @current_user.role_id != 3
+      not_found
+    elsif @user.update(user_params)
       render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity
@@ -43,6 +51,6 @@ class UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
-      params.permit(:name, :username, :role_id)
+      params.permit(:name, :username, :password, :password_confirmation, :is_enabled, :role_id)
     end
 end

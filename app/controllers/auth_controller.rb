@@ -1,10 +1,10 @@
 class AuthController < ApplicationController
 	def index
 		@user = User.find_by_username(auth_params[:username])
-		if @user.authenticate(auth_params[:password])
-			render json: {token: JsonWebToken.encode(id: @user.id, role_id: @user.role_id)}
+		if @user != nil && @user.authenticate(auth_params[:password])
+			render json: {token: JsonWebToken.encode(id: @user.id)}
 		else
-			render json: {}, status: :unauthorized
+			not_found
 		end
 	end 
 

@@ -16,6 +16,10 @@ class RestaurantsController < ApplicationController
 
   # POST /restaurants
   def create
+    if @current_user.id != restaurant_params[:user_id] && @current_user.role_id != 3
+      not_found
+    end
+    
     @restaurant = Restaurant.new(restaurant_params)
 
     if @restaurant.save
@@ -27,6 +31,10 @@ class RestaurantsController < ApplicationController
 
   # PATCH/PUT /restaurants/1
   def update
+    if @current_user.id != @restaurant.user_id && @current_user.role_id != 3
+      not_found
+    end
+
     if @restaurant.update(restaurant_params)
       render json: @restaurant
     else
